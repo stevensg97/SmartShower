@@ -1,15 +1,15 @@
 import {createStackNavigator} from 'react-navigation';
 
-import LoginPage from './src/screens/login-page';
-import GridViewPage from './src/screens/gridview-page';
-import ShowerPage from './src/screens/shower-page';
-import SettingsPage from './src/screens/settings-page';
+import LoginScreen from './src/screens/login-screen';
+import HomeScreen from './src/screens/home-screen';
+import ShowerScreen from './src/screens/shower-screen';
+import SettingsScreen from './src/screens/settings-screen';
 
 const App = createStackNavigator({
-  Login: {screen: LoginPage},
-  GridView: {screen: GridViewPage},
-  Shower: {screen: ShowerPage},
-  Settings: {screen: SettingsPage},
+  Login: {screen: LoginScreen},
+  Home: {screen: HomeScreen},
+  Shower: {screen: ShowerScreen},
+  Settings: {screen: SettingsScreen},
 })
 
 export default App

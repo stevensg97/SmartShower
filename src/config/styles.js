@@ -1,16 +1,20 @@
 export const colors = {
-  white: '#fff'
+  white: '#ffffff',
+  black: '#000000',
+  transparent: 'transparent',
+  placeholderColor: 'rgba(225,225,225,0.7)',
+  inputColor: 'rgba(225,225,225,0.2)'
 }
 
 export const commonStyles = {
   buttonContainer: {
-    backgroundColor: "#000000",
+    backgroundColor: colors.black,
+    borderRadius: 15,
     paddingVertical: 15,
-    borderRadius: 15
   },
   buttonText: {
-    color: "#fff",
-    fontWeight: "700",
-    textAlign: "center",
+    color: colors.white,
+    fontWeight: '700',
+    textAlign: 'center',
   },
 }
