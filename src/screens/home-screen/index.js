@@ -25,7 +25,6 @@ export default class Home extends Component {
   static navigationOptions = {
     title: SCREENS.HOME,
     headerLeft: null,
-
   }
   constructor() {
     super();

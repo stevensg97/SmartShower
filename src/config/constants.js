@@ -1,10 +1,11 @@
 export const ALERTS = {
   WRONG: "Wrong user or password.",
+  PASSWORD_NOT_MATCH: "Password does not match"
 }
 
 export const BUTTONS = {
   LOGIN: 'LOGIN',
-  REGISTER: 'Register',
+  SIGNIN: 'Sign In',
   FORGOT: 'Forgot your password?',
   LANGUAGE: 'Language',
   STATISTICS: 'Usage Statistics',
@@ -21,8 +22,8 @@ export const BUTTONS = {
   WARM: 'Warm',
   HOT: 'Hot',
   TURN_ON: 'Turn on the shower?',
-  YES: 'Yes',
-  NO: 'No',
+  DONE: 'Done',
+  AUTOMATIC: 'Automatic'
 }
 
 export const NUMBER_OF_COLUMNS = 2;
@@ -38,13 +39,24 @@ export const OPTIONS_SCREENS = {
 }
 
 export const PLACEHOLDERS = {
+  NAME: 'Name',
+  LASTNAME: 'Lastname',
   EMAIL: 'Email',
-  PASSWORD: 'Password'
+  PASSWORD: 'Password',
+  CHECK_PASSWORD: 'Check password',
 }
 
 export const SCREENS = {
-  Login: "Login",
+  LOGIN: "Login",
+  SIGNIN: "SignIn",
   HOME: "Home",
-  Shower: "Smart Shower",
-  Settings: "Settings",
+  SHOWER: "Smart Shower",
+  SETTINGS: "Settings",
+}
+
+export const VALUES = {
+  PERCENTAGE25: 25,
+  PERCENTAGE50: 50,
+  PERCENTAGE75: 75,
+  PERCENTAGE100: 100
 }

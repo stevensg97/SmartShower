@@ -3,7 +3,6 @@ import {
   View,
   Text,
   TextInput,
-  Image,
   StyleSheet,
   KeyboardAvoidingView,
   TouchableOpacity,
@@ -19,47 +18,63 @@ import {
   BUTTONS
 } from '../../config/constants';
 
-export default class Login extends Component {
+export default class SignIn extends Component {
   static navigationOptions = {
-    title: SCREENS.LOGIN
+    title: SCREENS.SIGNIN,
   };
 
   constructor(props) {
     super(props);
     this.state = {
-      emailString: "juanito@gmail.com",
-      passwordString: "1234",
+      nameString: "",
+      lastNameString: "",
+      emailString: "",
+      passwordString: "",
+      checkPasswordString: "",
       isLoading: false,
     };
   }
 
-  _onLoginPressed = () => {
+  _onSignInPressed = () => {
     this.setState({ isLoading: true })
-    if (this.state.emailString == "juanito@gmail.com" &&
-      this.state.passwordString == "1234"
-    ) {
-      this.setState({ isLoading: false })
-      this.props.navigation.navigate(SCREENS.HOME);
+    if(this.state.passwordString == this.state.checkPasswordString){
+      this.props.navigation.navigate(SCREENS.LOGIN);
     } else {
       this.setState({ isLoading: false })
-      alert(ALERTS.WRONG);
+      alert(ALERTS.PASSWORD_NOT_MATCH)
     }
+
+
   };
 
-  _onLoginTextChangedEmail = event => {
+  _onSignInTextChangedCheckPassword = event => {
+    this.setState({
+      checkPasswordString: event.nativeEvent.text
+    });
+  };
+
+  _onSignInTextChangedEmail = event => {
     this.setState({
       emailString: event.nativeEvent.text
     });
   };
 
-  _onLoginTextChangedPassword = event => {
+  _onSignInTextChangedLastName = event => {
     this.setState({
-      passwordString: event.nativeEvent.text
+      lastNameString: event.nativeEvent.text
     });
   };
 
-  _onSignInPressed = () => {
-    this.props.navigation.navigate(SCREENS.SIGNIN);
+  _onSignInTextChangedName = event => {
+    this.setState({
+      nameString: event.nativeEvent.text
+    });
+  };
+
+  _onSignInTextChangedPassword = event => {
+    this.setState({
+      passwordString: event.nativeEvent.text
+    });
   };
 
   render() {
@@ -69,24 +84,45 @@ export default class Login extends Component {
 
     return (
       <KeyboardAvoidingView behavior='padding' style={styles.container}>
-        <View style={styles.loginContainer}>
-          <Image
-            style={styles.logo}
-            source={IconHouse}
-          />
-        </View>
-        {spinner}
         <View style={styles.formContainer}>
           <View style={styles.containerForm}>
             <StatusBar barStyle='light-content' />
             <TextInput
               style={styles.input}
               autoCapitalize='none'
+              onSubmitEditing={() => this.lastNameInput.focus()}
+              autoCorrect={false}
+              keyboardType='default'
+              value={this.state.nameString}
+              onChange={this._onSignInTextChangedName}
+              underlineColorAndroid={colors.transparent}
+              returnKeyType='next'
+              placeholder={PLACEHOLDERS.NAME}
+              placeholderTextColor={colors.placeholderColor}
+            />
+            <TextInput
+              style={styles.input}
+              autoCapitalize='none'
+              ref={input => (this.lastNameInput = input)}
+              onSubmitEditing={() => this.emailInput.focus()}
+              autoCorrect={false}
+              keyboardType='default'
+              value={this.state.lastNameString}
+              onChange={this._onSignInTextChangedLastName}
+              underlineColorAndroid={colors.transparent}
+              returnKeyType='next'
+              placeholder={PLACEHOLDERS.LASTNAME}
+              placeholderTextColor={colors.placeholderColor}
+            />
+            <TextInput
+              style={styles.input}
+              autoCapitalize='none'
+              ref={input => (this.emailInput = input)}
               onSubmitEditing={() => this.passwordInput.focus()}
               autoCorrect={false}
               keyboardType='email-address'
               value={this.state.emailString}
-              onChange={this._onLoginTextChangedEmail}
+              onChange={this._onSignInTextChangedEmail}
               underlineColorAndroid={colors.transparent}
               returnKeyType='next'
               placeholder={PLACEHOLDERS.EMAIL}
@@ -94,31 +130,35 @@ export default class Login extends Component {
             />
             <TextInput
               style={styles.input}
-              returnKeyType='go'
               ref={input => (this.passwordInput = input)}
+              onSubmitEditing={() => this.checkPasswordInput.focus()}
               placeholder={PLACEHOLDERS.PASSWORD}
               value={this.state.passwordString}
-              onChange={this._onLoginTextChangedPassword}
+              onChange={this._onSignInTextChangedPassword}
+              underlineColorAndroid={colors.transparent}
+              placeholderTextColor={colors.placeholderColor}
+              secureTextEntry
+            />
+            <TextInput
+              style={styles.input}
+              returnKeyType='go'
+              ref={input => (this.checkPasswordInput = input)}
+              placeholder={PLACEHOLDERS.CHECK_PASSWORD}
+              value={this.state.checkPasswordString}
+              onChange={this._onSignInTextChangedCheckPassword}
               underlineColorAndroid={colors.transparent}
               placeholderTextColor={colors.placeholderColor}
               secureTextEntry
             />
             <TouchableOpacity
               style={styles.buttonContainer}
-              onPress={this._onLoginPressed}
+              onPress={this._onSignInPressed}
             >
-              <Text style={styles.buttonText}>{BUTTONS.LOGIN}</Text>
+              <Text style={styles.buttonText}>{BUTTONS.SIGNIN}</Text>
             </TouchableOpacity>
-            <View style={styles.containerLink}>
-            <TouchableOpacity onPress={this._onSignInPressed}>
-              <Text style={styles.textLink}>{BUTTONS.SIGNIN}</Text>
-            </TouchableOpacity>
-            <TouchableOpacity>
-              <Text style={styles.textLink}>{BUTTONS.FORGOT}</Text>
-            </TouchableOpacity>
-            </View>
           </View>
         </View>
+        {spinner}
       </KeyboardAvoidingView>
     );
   }

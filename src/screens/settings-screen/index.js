@@ -13,7 +13,7 @@ import {
 
 export default class Settings extends Component {
   static navigationOptions = {
-    title: SCREENS.Settings,
+    title: SCREENS.SETTINGS,
   };
 
   render() {
