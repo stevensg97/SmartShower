@@ -6,6 +6,7 @@ import {
   TouchableOpacity,
   Switch,
 } from 'react-native';
+import MQTTClient from './mqtt'
 import { colors, commonStyles } from '../../config/styles';
 import {
   SCREENS,
@@ -126,10 +127,10 @@ export default class Shower extends Component {
         <View style={styles.containerOption}>
           <Text style={styles.title}>{BUTTONS.TURN_ON}</Text>
           <TouchableOpacity style={styles.buttonContainer}>
-            <Text style={styles.buttonText}>{BUTTONS.DONE}</Text>
+            <Text style={styles.buttonText} onPress={() => MQTTClient("1")}>{BUTTONS.DONE}</Text>
           </TouchableOpacity>
           <TouchableOpacity style={styles.buttonContainer}>
-            <Text style={styles.buttonText}>{BUTTONS.AUTOMATIC}</Text>
+            <Text style={styles.buttonText} onPress={() => MQTTClient("2")}>{BUTTONS.AUTOMATIC}</Text>
           </TouchableOpacity>
         </View>
       </View>
