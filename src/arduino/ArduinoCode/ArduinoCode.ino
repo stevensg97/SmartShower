@@ -2,6 +2,7 @@
 #include <WiFiEsp.h>
 #include <PubSubClient.h>
 #include "SoftwareSerial.h"
+#include <dht11.h>
 
 #define WIFI_AP "Presion"
 #define WIFI_PASSWORD "nigguplease"
@@ -11,7 +12,9 @@ WiFiEspClient espClient;
 PubSubClient client(espClient);
 SoftwareSerial esp8266(11,12); // make RX Arduino line is pin 2, make TX Arduino line is pin 3.
 
-
+dht11 DHT;
+#define DHT11_PIN 4
+int chk;
 char ssid[] = "Apartamento";
 char pass[] = "gaboselacome";
 char server[] = "m16.cloudmqtt.com";
@@ -30,33 +33,35 @@ void callback(char* topic, byte* payload, unsigned int length) {
   Serial.print("Message arrived [");
   Serial.print(topic);
   Serial.print("] ");
+  String entry="";
+  String data="";
   for (int i = 0; i < length; i++) {
-    Serial.print((char)payload[i]);
+    entry=entry+(char)payload[i];
   }
-  Serial.println();
+  Serial.println(entry);
 
+  data = entry.substring(entry.indexOf(']')+1, entry.lastIndexOf(' '));
+  Serial.println(data);
   // Switch on the LED if an 1 was received as first character
-  if ((char)payload[0] == '1') {
+  if (data == "pump1=On") {
     digitalWrite(2, LOW);   // Turn the LED on (Note that LOW is the voltage level
     delay(10000);
     Serial.println("resetting");
     delay(200);
     digitalWrite(13, LOW);
     resetFunc();  //call reset
-  } else if((char)payload[0] == '2'){
-    digitalWrite(2, HIGH);  // Turn the LED off by making the voltage HIGH
-  } else if((char)payload[0] == '3'){
+  } else if(data == "pump2=On"){
     digitalWrite(3, LOW);  // Turn the LED off by making the voltage HIGH
     delay(10000);
     Serial.println("resetting");
     delay(200);
     digitalWrite(13, LOW);
     resetFunc();  //call reset
-  } else if((char)payload[0] == 'h'){
+  } else if(data == "soap=true"){
     digitalWrite(10, HIGH);
-  } else if((char)payload[0] == 'l'){
+  } else if(data == "soap=false"){
     digitalWrite(10, LOW);
-  } else{
+  } else if(data == "auto"){
     digitalWrite(2, LOW);
     digitalWrite(3, LOW);
     delay(10000);
@@ -90,6 +95,9 @@ void setup() {
 
 
 void loop(){
+  //chk = DHT.read(DHT11_PIN);
+  //Serial.println("Temperature is ");
+  //Serial.println(DHT.temperature,1);
   status = WiFi.status();
   if ( status != WL_CONNECTED) {
     while ( status != WL_CONNECTED) {
