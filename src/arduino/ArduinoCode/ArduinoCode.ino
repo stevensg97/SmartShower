@@ -3,8 +3,8 @@
 #include <PubSubClient.h>
 #include "SoftwareSerial.h"
 
-#define WIFI_AP "Apartamento"
-#define WIFI_PASSWORD "gaboselacome"
+#define WIFI_AP "Presion"
+#define WIFI_PASSWORD "nigguplease"
 #define TOKEN "YOUR_ACCESS_TOKEN"
 
 WiFiEspClient espClient;
@@ -52,8 +52,10 @@ void callback(char* topic, byte* payload, unsigned int length) {
     delay(200);
     digitalWrite(13, LOW);
     resetFunc();  //call reset
-  } else if((char)payload[0] == '4'){
-    digitalWrite(3, HIGH);
+  } else if((char)payload[0] == 'h'){
+    digitalWrite(10, HIGH);
+  } else if((char)payload[0] == 'l'){
+    digitalWrite(10, LOW);
   } else{
     digitalWrite(2, LOW);
     digitalWrite(3, LOW);
@@ -74,9 +76,11 @@ void setup() {
   Serial.begin(9600);
   pinMode(2, OUTPUT);
   pinMode(3, OUTPUT);
+  pinMode(10, OUTPUT);
   pinMode(13, OUTPUT);
   digitalWrite(2, HIGH);
   digitalWrite(3, HIGH);
+  digitalWrite(10, LOW);
   digitalWrite(13, HIGH);
   InitWiFi();
   client.setServer( server, port );

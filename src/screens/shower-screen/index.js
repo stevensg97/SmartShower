@@ -127,10 +127,10 @@ export default class Shower extends Component {
         <View style={styles.containerOption}>
           <Text style={styles.title}>{BUTTONS.TURN_ON}</Text>
           <TouchableOpacity style={styles.buttonContainer}>
-            <Text style={styles.buttonText} onPress={() => MQTTClient("1")}>{BUTTONS.DONE}</Text>
+            <Text style={styles.buttonText} onPress={() => MQTTClient("h")}>{BUTTONS.DONE}</Text>
           </TouchableOpacity>
           <TouchableOpacity style={styles.buttonContainer}>
-            <Text style={styles.buttonText} onPress={() => MQTTClient("2")}>{BUTTONS.AUTOMATIC}</Text>
+            <Text style={styles.buttonText} onPress={() => MQTTClient("l")}>{BUTTONS.AUTOMATIC}</Text>
           </TouchableOpacity>
         </View>
       </View>
