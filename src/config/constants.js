@@ -63,4 +63,5 @@ export const VALUES = {
   COLD: 'c',
   WARM: 'w',
   HOT: 'h',
+  URL: 'https://massive-vampirebat-42.localtunnel.me/api/v1/',
 }

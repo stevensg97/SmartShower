@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, { Component } from "react";
 import {
   View,
   Text,
@@ -9,15 +9,16 @@ import {
   TouchableOpacity,
   StatusBar,
   ActivityIndicator
-} from 'react-native';
-import IconHouse from '../../assets/house1.png';
-import { colors, commonStyles } from '../../config/styles';
+} from "react-native";
+import IconHouse from "../../assets/house1.png";
+import { colors, commonStyles } from "../../config/styles";
 import {
   SCREENS,
   ALERTS,
   PLACEHOLDERS,
-  BUTTONS
-} from '../../config/constants';
+  BUTTONS,
+  VALUES
+} from "../../config/constants";
 
 export default class Login extends Component {
   static navigationOptions = {
@@ -27,22 +28,33 @@ export default class Login extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      emailString: "juanito@gmail.com",
-      passwordString: "1234",
-      isLoading: false,
+      emailString: '',
+      passwordString: '',
+      isLoading: false
     };
   }
 
-  _onLoginPressed = () => {
-    this.setState({ isLoading: true })
-    if (this.state.emailString == "juanito@gmail.com" &&
-      this.state.passwordString == "1234"
-    ) {
-      this.setState({ isLoading: false })
-      this.props.navigation.navigate(SCREENS.HOME);
-    } else {
-      this.setState({ isLoading: false })
-      alert(ALERTS.WRONG);
+  _onLoginPressed = async () => {
+    this.setState({ isLoading: true });
+    try {
+      let response = await fetch(
+        VALUES.URL + "users/findOne?email=" + this.state.emailString
+      );
+      let responseJson = await response.json();
+      if (
+        this.state.emailString == responseJson[0].email &&
+        this.state.passwordString == responseJson[0].password
+      ) {
+        this.setState({ isLoading: false });
+        this.props.navigation.navigate(SCREENS.HOME);
+        this.setState({ emailString: '' });
+        this.setState({ passwordString: '' });
+      } else {
+        this.setState({ isLoading: false });
+        alert(ALERTS.WRONG);
+      }
+    } catch (error) {
+      console.log(error);
     }
   };
 
@@ -64,37 +76,34 @@ export default class Login extends Component {
 
   render() {
     const spinner = this.state.isLoading ? (
-      <ActivityIndicator size='large' />
+      <ActivityIndicator size="large" />
     ) : null;
 
     return (
-      <KeyboardAvoidingView behavior='padding' style={styles.container}>
+      <KeyboardAvoidingView behavior="padding" style={styles.container}>
         <View style={styles.loginContainer}>
-          <Image
-            style={styles.logo}
-            source={IconHouse}
-          />
+          <Image style={styles.logo} source={IconHouse} />
         </View>
         {spinner}
         <View style={styles.formContainer}>
           <View style={styles.containerForm}>
-            <StatusBar barStyle='light-content' />
+            <StatusBar barStyle="light-content" />
             <TextInput
               style={styles.input}
-              autoCapitalize='none'
+              autoCapitalize="none"
               onSubmitEditing={() => this.passwordInput.focus()}
               autoCorrect={false}
-              keyboardType='email-address'
+              keyboardType="email-address"
               value={this.state.emailString}
               onChange={this._onLoginTextChangedEmail}
               underlineColorAndroid={colors.transparent}
-              returnKeyType='next'
+              returnKeyType="next"
               placeholder={PLACEHOLDERS.EMAIL}
               placeholderTextColor={colors.placeholderColor}
             />
             <TextInput
               style={styles.input}
-              returnKeyType='go'
+              returnKeyType="go"
               ref={input => (this.passwordInput = input)}
               placeholder={PLACEHOLDERS.PASSWORD}
               value={this.state.passwordString}
@@ -110,12 +119,12 @@ export default class Login extends Component {
               <Text style={styles.buttonText}>{BUTTONS.LOGIN}</Text>
             </TouchableOpacity>
             <View style={styles.containerLink}>
-            <TouchableOpacity onPress={this._onSignInPressed}>
-              <Text style={styles.textLink}>{BUTTONS.SIGNIN}</Text>
-            </TouchableOpacity>
-            <TouchableOpacity>
-              <Text style={styles.textLink}>{BUTTONS.FORGOT}</Text>
-            </TouchableOpacity>
+              <TouchableOpacity onPress={this._onSignInPressed}>
+                <Text style={styles.textLink}>{BUTTONS.SIGNIN}</Text>
+              </TouchableOpacity>
+              <TouchableOpacity>
+                <Text style={styles.textLink}>{BUTTONS.FORGOT}</Text>
+              </TouchableOpacity>
             </View>
           </View>
         </View>
@@ -127,20 +136,20 @@ export default class Login extends Component {
 const styles = StyleSheet.create({
   container: {
     backgroundColor: colors.white,
-    flex: 1,
+    flex: 1
   },
   loginContainer: {
-    alignItems: 'center',
+    alignItems: "center",
     flexGrow: 1,
-    justifyContent: 'center'
+    justifyContent: "center"
   },
   logo: {
-    alignSelf: 'center',
+    alignSelf: "center",
     flex: 1,
-    height: '60%',
-    resizeMode: 'contain',
-    resizeMode: 'contain',
-    width: '60%',
+    height: "60%",
+    resizeMode: "contain",
+    resizeMode: "contain",
+    width: "60%"
   },
   containerForm: {
     padding: 20
@@ -150,19 +159,19 @@ const styles = StyleSheet.create({
     color: colors.black,
     height: 40,
     marginBottom: 10,
-    padding: 10,
+    padding: 10
   },
   buttonContainer: commonStyles.buttonContainer,
   buttonText: commonStyles.buttonText,
   containerLink: {
-    alignItems: 'center',
-    alignSelf: 'stretch',
-    flexDirection: 'column',
+    alignItems: "center",
+    alignSelf: "stretch",
+    flexDirection: "column"
   },
   textLink: {
     color: colors.black,
-    fontWeight: '700',
+    fontWeight: "700",
     margin: 6,
-    textAlign: 'center',
-  },
+    textAlign: "center"
+  }
 });

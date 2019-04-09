@@ -15,7 +15,8 @@ import {
   SCREENS,
   ALERTS,
   PLACEHOLDERS,
-  BUTTONS
+  BUTTONS,
+  VALUES
 } from '../../config/constants';
 
 export default class SignIn extends Component {
@@ -39,7 +40,7 @@ export default class SignIn extends Component {
     this.setState({ isLoading: true })
     if (this.state.passwordString == this.state.checkPasswordString) {
       try {
-        let response = await fetch('http://192.168.100.15:8000/api/v1/users', {
+        let response = await fetch(VALUES.URL, {
           method: 'POST',
           headers: {
             'Accept': 'application/json',
@@ -62,8 +63,6 @@ export default class SignIn extends Component {
       this.setState({ isLoading: false })
       alert(ALERTS.PASSWORD_NOT_MATCH)
     }
-
-
   };
 
   _onSignInTextChangedCheckPassword = event => {
