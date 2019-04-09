@@ -5,6 +5,7 @@ import SignInScreen from './src/screens/signin-screen';
 import HomeScreen from './src/screens/home-screen';
 import ShowerScreen from './src/screens/shower-screen';
 import SettingsScreen from './src/screens/settings-screen';
+import StatisticsScreen from './src/screens/statistics-screen';
 
 const App = createStackNavigator({
   Login: {screen: LoginScreen},
@@ -12,6 +13,7 @@ const App = createStackNavigator({
   Home: {screen: HomeScreen},
   Shower: {screen: ShowerScreen},
   Settings: {screen: SettingsScreen},
+  Statistics: {screen: StatisticsScreen},
 })
 
 export default App

@@ -8,7 +8,7 @@ export const BUTTONS = {
   SIGNIN: 'Sign In',
   FORGOT: 'Forgot your password?',
   LANGUAGE: 'Language',
-  STATISTICS: 'Usage Statistics',
+  STATISTICS: 'Statistics',
   LOGOUT: 'Log Out',
   ABOUT: 'About',
   WATER_LEVEL: 'Water Level',
@@ -52,6 +52,7 @@ export const SCREENS = {
   HOME: "Home",
   SHOWER: "Smart Shower",
   SETTINGS: "Settings",
+  STATISTICS: "Statistics",
 }
 
 export const VALUES = {

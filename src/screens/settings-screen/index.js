@@ -12,6 +12,10 @@ export default class Settings extends Component {
     this.props.navigation.navigate(SCREENS.LOGIN);
   };
 
+  _onStatisticsPressed = () => {
+    this.props.navigation.navigate(SCREENS.STATISTICS);
+  };
+
   render() {
     return (
       <View style={styles.container}>
@@ -19,7 +23,10 @@ export default class Settings extends Component {
           <TouchableOpacity style={styles.buttonContainer}>
             <Text style={styles.buttonText}>{BUTTONS.LANGUAGE}</Text>
           </TouchableOpacity>
-          <TouchableOpacity style={styles.buttonContainer}>
+          <TouchableOpacity
+            style={styles.buttonContainer}
+            onPress={this._onStatisticsPressed}
+          >
             <Text style={styles.buttonText}>{BUTTONS.STATISTICS}</Text>
           </TouchableOpacity>
           <TouchableOpacity
