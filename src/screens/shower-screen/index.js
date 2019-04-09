@@ -12,13 +12,14 @@ export default class Shower extends Component {
   constructor(props) {
     super(props);
     this.state = {
+      waterLevel: VALUES.PERCENTAGE25,
       switchSoapValue: false,
-      waterLevel: 0,
-      waterTemperature: ""
+      soapValue: 'f',
+      waterTemperature: VALUES.COLD
     };
   }
 
-  _selectedButtonStyle = function(value) {
+  _selectedButtonStyle = function (value) {
     if (
       this.state.waterLevel == value ||
       this.state.waterTemperature == value
@@ -29,7 +30,7 @@ export default class Shower extends Component {
     }
   };
 
-  _selectedButtonTextStyle = function(value) {
+  _selectedButtonTextStyle = function (value) {
     if (
       this.state.waterLevel == value ||
       this.state.waterTemperature == value
@@ -50,6 +51,11 @@ export default class Shower extends Component {
 
   _toggleSoapSwitch = value => {
     this.setState({ switchSoapValue: value });
+    if(value){
+      this.setState({ soapValue: 't' });
+    } else {
+      this.setState({ soapValue: 'f' });
+    }
   };
 
   render() {
@@ -104,27 +110,35 @@ export default class Shower extends Component {
         <View style={styles.containerOption}>
           <Text style={styles.title}>{BUTTONS.WATER_TEMPERATURE}</Text>
           <TouchableOpacity
-            style={this._selectedButtonStyle("Cold")}
-            onPress={() => this._selectedWaterTemperature("Cold")}
+            style={this._selectedButtonStyle(VALUES.COLD)}
+            onPress={() => this._selectedWaterTemperature(VALUES.COLD)}
           >
-            <Text style={this._selectedButtonTextStyle("Cold")}>
+            <Text style={this._selectedButtonTextStyle(VALUES.COLD)}>
               {BUTTONS.COLD}
             </Text>
           </TouchableOpacity>
           <TouchableOpacity
-            style={this._selectedButtonStyle("Warm")}
-            onPress={() => this._selectedWaterTemperature("Warm")}
+            style={this._selectedButtonStyle(VALUES.WARM)}
+            onPress={() => this._selectedWaterTemperature(VALUES.WARM)}
           >
-            <Text style={this._selectedButtonTextStyle("Warm")}>
+            <Text style={this._selectedButtonTextStyle(VALUES.WARM)}>
               {BUTTONS.WARM}
             </Text>
           </TouchableOpacity>
           <TouchableOpacity
-            style={this._selectedButtonStyle("Hot")}
-            onPress={() => this._selectedWaterTemperature("Hot")}
+            style={this._selectedButtonStyle(VALUES.HOT)}
+            onPress={() => this._selectedWaterTemperature(VALUES.HOT)}
           >
-            <Text style={this._selectedButtonTextStyle("Hot")}>
+            <Text style={this._selectedButtonTextStyle(VALUES.HOT)}>
               {BUTTONS.HOT}
+            </Text>
+          </TouchableOpacity>
+          <TouchableOpacity
+            style={this._selectedButtonStyle(VALUES.AUTO)}
+            onPress={() => this._selectedWaterTemperature(VALUES.AUTO)}
+          >
+            <Text style={this._selectedButtonTextStyle(VALUES.AUTO)}>
+              {BUTTONS.AUTOMATIC}
             </Text>
           </TouchableOpacity>
         </View>
@@ -132,15 +146,12 @@ export default class Shower extends Component {
           <Text style={styles.title}>{BUTTONS.TURN_ON}</Text>
           <TouchableOpacity
             style={styles.buttonContainer}
-            onPress={() => MQTTClient("h")}
+            onPress={() => MQTTClient([
+              this.state.waterLevel,
+              this.state.soapValue,
+              this.state.waterTemperature])}
           >
             <Text style={styles.buttonText}>{BUTTONS.DONE}</Text>
-          </TouchableOpacity>
-          <TouchableOpacity
-            style={styles.buttonContainer}
-            onPress={() => MQTTClient("l")}
-          >
-            <Text style={styles.buttonText}>{BUTTONS.AUTOMATIC}</Text>
           </TouchableOpacity>
         </View>
       </View>

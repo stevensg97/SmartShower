@@ -8,17 +8,21 @@ export default function MQTTClient(data) {
     defaultExpires: 1000 * 3600 * 24,
     enableCache: true,
     reconnect: true,
-    sync : {}
+    sync: {}
   });
 
   function onConnect() {
     console.log("onConnect");
-
     const topic = "/home/smartshower"
     client.subscribe(topic);
-    message = new Paho.MQTT.Message(data);
+    var params = '';
+    for (var i = 0; i < data.length; i++) {
+      params = params + data[i] + ',';
+    }
+    message = new Paho.MQTT.Message(params);
     message.destinationName = topic;
     client.send(message);
+
   }
 
   function onConnectionLost(responseObject) {
@@ -31,7 +35,7 @@ export default function MQTTClient(data) {
     console.log("onMessageArrived:" + message.payloadString);
   }
 
-  function doFail(e){
+  function doFail(e) {
     console.log('error', e);
   }
 

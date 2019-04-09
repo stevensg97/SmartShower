@@ -58,5 +58,9 @@ export const VALUES = {
   PERCENTAGE25: 25,
   PERCENTAGE50: 50,
   PERCENTAGE75: 75,
-  PERCENTAGE100: 100
+  PERCENTAGE100: 100,
+  AUTO: 'a',
+  COLD: 'c',
+  WARM: 'w',
+  HOT: 'h',
 }
