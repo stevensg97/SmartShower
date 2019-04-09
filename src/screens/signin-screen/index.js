@@ -35,10 +35,29 @@ export default class SignIn extends Component {
     };
   }
 
-  _onSignInPressed = () => {
+  _onSignInPressed = async () => {
     this.setState({ isLoading: true })
-    if(this.state.passwordString == this.state.checkPasswordString){
-      this.props.navigation.navigate(SCREENS.LOGIN);
+    if (this.state.passwordString == this.state.checkPasswordString) {
+      try {
+        let response = await fetch('http://192.168.100.15:8000/api/v1/users', {
+          method: 'POST',
+          headers: {
+            'Accept': 'application/json',
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            name: this.state.nameString,
+            lastname: this.state.lastNameString,
+            email: this.state.emailString,
+            password: this.state.passwordString
+          })
+        });
+        let responseJson = await response.json();
+        this.props.navigation.navigate(SCREENS.LOGIN);
+        return responseJson.result;
+      } catch (error) {
+        console.log(error)
+      }
     } else {
       this.setState({ isLoading: false })
       alert(ALERTS.PASSWORD_NOT_MATCH)
