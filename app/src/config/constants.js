@@ -23,7 +23,10 @@ export const BUTTONS = {
   HOT: 'Hot',
   TURN_ON: 'Turn on the shower?',
   DONE: 'Done',
-  AUTOMATIC: 'Automatic'
+  AUTOMATIC: 'Automatic',
+  CONFIRM: 'Confirm',
+  CANCEL: 'Cancel',
+  OK: 'OK',
 }
 
 export const NUMBER_OF_COLUMNS = 2;
@@ -44,6 +47,8 @@ export const PLACEHOLDERS = {
   EMAIL: 'Email',
   PASSWORD: 'Password',
   CHECK_PASSWORD: 'Check password',
+  INITIAL_DATE: 'Initial date',
+  FINAL_DATE: 'Final date'
 }
 
 export const SCREENS = {
@@ -64,6 +69,12 @@ export const VALUES = {
   COLD: 'c',
   WARM: 'w',
   HOT: 'h',
-  URL: 'https://proud-wolverine-27.localtunnel.me/api/v1/',
-  WATER_CONSUMPTION: 'Water Consumption'
+  URL: 'https://witty-dragonfly-68.localtunnel.me/api/v1/',
+  WATER_CONSUMPTION: 'Water Consumption',
+  DATE: 'date',
+  DATE_FORMAT: 'DD-MM-YYYY',
+  MIN_DATE:'01-01-2016',
+  MAX_DATE:'01-01-2030',
+  LITERS: ' Liters',
+  USERS: 'users'
 }

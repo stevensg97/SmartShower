@@ -1,8 +1,8 @@
-import React, { Component } from "react";
-import { View, Text, StyleSheet, TouchableOpacity, Alert } from "react-native";
+import React, { Component } from 'react';
+import { View, Text, StyleSheet, TouchableOpacity, Alert } from 'react-native';
 import DatePicker from 'react-native-datepicker';
-import { colors, commonStyles } from "../../config/styles";
-import { SCREENS, BUTTONS, VALUES } from "../../config/constants";
+import { colors } from '../../config/styles';
+import { SCREENS, BUTTONS, VALUES, PLACEHOLDERS } from '../../config/constants';
 
 export default class Shower extends Component {
   static navigationOptions = {
@@ -13,8 +13,19 @@ export default class Shower extends Component {
     super(props);
     this.state = {
       initialDate: '',
-      finalDate: ''
+      finalDate: '',
+      dateLiters: '25',
+      todayLiters: ''
     };
+  }
+
+  _onWaterConsumptionByDatePressed = async () => {
+    Alert.alert(
+      VALUES.WATER_CONSUMPTION,
+      this.state.dateLiters+VALUES.LITERS,
+      [{ text: BUTTONS.OK, onPress: () => console.log("OK Pressed") }],
+      { cancelable: false }
+    )
   }
 
   render() {
@@ -23,70 +34,46 @@ export default class Shower extends Component {
         <View style={styles.containerOption}>
           <Text style={styles.title}>{VALUES.WATER_CONSUMPTION}</Text>
           <DatePicker
-            style={{ width: 175, alignSelf: 'center', margin: 5 }}
-            date={this.state.initialDate} //initial date from state
-            mode="date" //The enum of date, datetime and time
-            placeholder="Initial date"
-            format="DD-MM-YYYY"
-            minDate="01-01-2016"
-            maxDate="01-01-2030"
-            confirmBtnText="Confirm"
-            cancelBtnText="Cancel"
+            style={styles.datePicker}
+            date={this.state.initialDate}
+            mode={VALUES.DATE}
+            placeholder={PLACEHOLDERS.INITIAL_DATE}
+            format={VALUES.DATE_FORMAT}
+            minDate={VALUES.MIN_DATE}
+            maxDate={VALUES.MAX_DATE}
+            confirmBtnText={BUTTONS.CONFIRM}
+            cancelBtnText={BUTTONS.CANCEL}
             customStyles={{
-              dateIcon: {
-                position: 'absolute',
-                left: 0,
-                top: 4,
-                marginLeft: 0,
-              },
-              dateInput: {
-                marginLeft: 36,
-                marginRight: 36,
-                borderRadius: 15,
-              }
+              dateIcon: styles.dateIcon,
+              dateInput: styles.dateInput
             }}
-            onDateChange={(date) => { this.setState({ initialDate: date }) }}
+            onDateChange={date => {
+              this.setState({ initialDate: date });
+            }}
           />
           <DatePicker
-            style={{ width: 175, alignSelf: 'center', margin: 5 }}
-            date={this.state.finalDate} //initial date from state
-            mode="date" //The enum of date, datetime and time
-            placeholder="Final date"
-            format="DD-MM-YYYY"
-            minDate="01-01-2016"
-            maxDate="01-01-2030"
-            confirmBtnText="Confirm"
-            cancelBtnText="Cancel"
+            style={styles.datePicker}
+            date={this.state.finalDate}
+            mode={VALUES.DATE}
+            placeholder={PLACEHOLDERS.FINAL_DATE}
+            format={VALUES.DATE_FORMAT}
+            minDate={VALUES.MIN_DATE}
+            maxDate={VALUES.MAX_DATE}
+            confirmBtnText={BUTTONS.CONFIRM}
+            cancelBtnText={BUTTONS.CANCEL}
             customStyles={{
-              dateIcon: {
-                position: 'absolute',
-                left: 0,
-                top: 4,
-                marginLeft: 0,
-              },
-              dateInput: {
-                marginLeft: 36,
-                marginRight: 36,
-                borderRadius: 15,
-              }
+              dateIcon: styles.dateIcon,
+              dateInput: styles.dateInput
             }}
-            onDateChange={(date) => { this.setState({ finalDate: date }) }}
+            onDateChange={date => {
+              this.setState({ finalDate: date });
+            }}
           />
           <TouchableOpacity
             style={styles.buttonContainer}
-            onPress={() =>
-              Alert.alert(
-                VALUES.WATER_CONSUMPTION,
-                '20 Liters',
-                [
-                  {text: 'OK', onPress: () => console.log('OK Pressed')},
-                ],
-                {cancelable: false},
-              )}
+            onPress={this._onWaterConsumptionByDatePressed}
           >
-            <Text style={styles.buttonText}>
-              {BUTTONS.PERCENTAGE50}
-            </Text>
+            <Text style={styles.buttonText}>{BUTTONS.DONE}</Text>
           </TouchableOpacity>
         </View>
       </View>
@@ -106,6 +93,22 @@ const styles = StyleSheet.create({
     alignSelf: "center",
     color: colors.black,
     fontSize: 30
+  },
+  datePicker: {
+    width: 175,
+    alignSelf: "center",
+    margin: 5
+  },
+  dateIcon: {
+    position: "absolute",
+    left: 0,
+    top: 4,
+    marginLeft: 0
+  },
+  dateInput: {
+    marginLeft: 36,
+    marginRight: 36,
+    borderRadius: 15
   },
   buttonContainer: {
     alignSelf: "center",

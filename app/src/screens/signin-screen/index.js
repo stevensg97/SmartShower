@@ -40,7 +40,7 @@ export default class SignIn extends Component {
     this.setState({ isLoading: true })
     if (this.state.passwordString == this.state.checkPasswordString) {
       try {
-        let response = await fetch(VALUES.URL, {
+        let response = await fetch(VALUES.URL+VALUES.USERS, {
           method: 'POST',
           headers: {
             'Accept': 'application/json',
