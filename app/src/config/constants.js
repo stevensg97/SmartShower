@@ -69,7 +69,7 @@ export const VALUES = {
   COLD: 'c',
   WARM: 'w',
   HOT: 'h',
-  URL: 'https://witty-dragonfly-68.localtunnel.me/api/v1/',
+  URL: 'https://thin-bat-99.localtunnel.me/api/v1/',
   WATER_CONSUMPTION: 'Water Consumption',
   DATE: 'date',
   DATE_FORMAT: 'DD-MM-YYYY',

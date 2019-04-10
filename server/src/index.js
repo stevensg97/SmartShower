@@ -6,7 +6,7 @@ const apollo = require('apollo-server-hapi')
 const { graphqlHapi, graphiqlHapi } = apollo
 
 
-//import createStudentRoutes from './api/v1/student'
+import createStudentRoutes from './api/v1/statistic'
 import createUserRoutes from './api/v1/user'
 
 import schema from './graphql/schema'
@@ -19,13 +19,14 @@ const server = Hapi.server({
 
 //createStudentRoutes(server);
 createUserRoutes(server);
+createStudentRoutes(server);
 
 // Add the route
 server.route({
   method: "GET",
   path: "/",
   handler: function(request, h) {
-    return "<h1>Hello World!!!</h1>";
+    return "<h1>Smart Shower</h1>";
   }
 });
 
