@@ -64,5 +64,6 @@ export const VALUES = {
   COLD: 'c',
   WARM: 'w',
   HOT: 'h',
-  URL: 'https://purple-bobcat-18.localtunnel.me/api/v1/',
+  URL: 'https://proud-wolverine-27.localtunnel.me/api/v1/',
+  WATER_CONSUMPTION: 'Water Consumption'
 }
