@@ -71,9 +71,11 @@ void callback(char* topic, byte* payload, unsigned int length) {
       delay(openPumpTime/2);
       digitalWrite(2, HIGH);
       digitalWrite(10, HIGH);
-      servoSoap.write(25);
+      //servoSoap.write(25);
+      servoMove(25);
       delay(3000);
-      servoSoap.write(90);
+      servoMove(90);
+      //servoSoap.write(90);
       digitalWrite(10, LOW);
       digitalWrite(2, LOW);
       delay(openPumpTime/2);
@@ -82,15 +84,18 @@ void callback(char* topic, byte* payload, unsigned int length) {
       delay(openPumpTime);
       digitalWrite(2, HIGH);
     }
+    Serial.println("resetting");
+    digitalWrite(13, LOW);
+    resetFunc();  //call reset
   } else if(params[2] == "h"){
     digitalWrite(3, LOW);
     if(params[1] == "t"){
       delay(openPumpTime/2);
       digitalWrite(3, HIGH);
       digitalWrite(10, HIGH);
-      servoSoap.write(25);
+      //servoSoap.write(25);
       delay(3000);
-      servoSoap.write(90);
+      //servoSoap.write(90);
       digitalWrite(10, LOW);
       digitalWrite(3, LOW);
       delay(openPumpTime/2);
@@ -107,9 +112,9 @@ void callback(char* topic, byte* payload, unsigned int length) {
       digitalWrite(2, HIGH);
       digitalWrite(3, HIGH);
       digitalWrite(10, HIGH);
-      servoSoap.write(25);
+      //servoSoap.write(25);
       delay(3000);
-      servoSoap.write(90);
+      //servoSoap.write(90);
       digitalWrite(10, LOW);
       digitalWrite(2, LOW);
       digitalWrite(3, LOW);
@@ -134,12 +139,15 @@ void setup() {
   pinMode(3, OUTPUT);
   pinMode(10, OUTPUT);
   pinMode(13, OUTPUT);
-  servoSoap.attach(8);
+  pinMode(9, OUTPUT);
+  digitalWrite(9, LOW);
+  //servoSoap.attach(8);
   digitalWrite(2, HIGH);
   digitalWrite(3, HIGH);
   digitalWrite(10, LOW);
   digitalWrite(13, HIGH);
-  servoSoap.write(25);
+  //servoSoap.write(25);
+  servoMove(10);
   InitWiFi();
   client.setServer( server, port );
   client.setCallback(callback);
@@ -148,6 +156,8 @@ void setup() {
 
 
 void loop(){
+  //servoMove(10);
+  //servoMove(70);
   status = WiFi.status();
   if ( status != WL_CONNECTED) {
     while ( status != WL_CONNECTED) {
@@ -248,9 +258,9 @@ void modeAuto(String soap, double openPumpTime){
       delay(openPumpTime/2);
       digitalWrite(3, HIGH);
       digitalWrite(10, HIGH);
-      servoSoap.write(25);
+      //servoSoap.write(25);
       delay(3000);
-      servoSoap.write(90);
+      //servoSoap.write(90);
       digitalWrite(10, LOW);
       digitalWrite(3, LOW);
       delay(openPumpTime/2);
@@ -268,9 +278,9 @@ void modeAuto(String soap, double openPumpTime){
       digitalWrite(2, HIGH);
       digitalWrite(3, HIGH);
       digitalWrite(10, HIGH);
-      servoSoap.write(25);
+      //servoSoap.write(25);
       delay(3000);
-      servoSoap.write(90);
+      //servoSoap.write(90);
       digitalWrite(10, LOW);
       digitalWrite(2, LOW);
       digitalWrite(3, LOW);
@@ -289,9 +299,9 @@ void modeAuto(String soap, double openPumpTime){
       delay(openPumpTime/2);
       digitalWrite(2, HIGH);
       digitalWrite(10, HIGH);
-      servoSoap.write(25);
+      //servoSoap.write(25);
       delay(3000);
-      servoSoap.write(90);
+      //servoSoap.write(90);
       digitalWrite(10, LOW);
       digitalWrite(2, LOW);
       delay(openPumpTime/2);
@@ -300,5 +310,16 @@ void modeAuto(String soap, double openPumpTime){
       delay(openPumpTime);
       digitalWrite(2, HIGH);
     }
+  }
+}
+
+void servoMove(int ang){
+  for(int i = 0; i < 180; i++){
+    float pause;
+    pause = ang*2000.0/180.0 + 700;
+    digitalWrite(9, HIGH);
+    delayMicroseconds(pause);
+    digitalWrite(9, LOW);
+    delayMicroseconds(25000-pause);
   }
 }
