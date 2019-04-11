@@ -2,8 +2,10 @@ const graphql = require('graphql');
 
 import StudentType from './student-type.js';
 import UserType from './user-type.js';
+import StatisticType from './statistic-type.js';
 import Student from '../models/student';
 import User from '../models/user';
+import Statistic from '../models/statistic';
 
 const {
   GraphQLObjectType,
@@ -28,6 +30,14 @@ const RootQuery = new GraphQLObjectType({
       resolve(parent, args) {
         console.log(args)
         return User.findById(args.id)
+      }
+    },
+    statistic: {
+      type: StatisticType,
+      args: { id: { type: GraphQLString }},
+      resolve(parent, args) {
+        console.log(args)
+        return Statistic.findById(args.id)
       }
     }
   }

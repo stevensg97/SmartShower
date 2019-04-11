@@ -1,6 +1,8 @@
 export const ALERTS = {
   WRONG: "Wrong user or password.",
-  PASSWORD_NOT_MATCH: "Password does not match"
+  PASSWORD_NOT_MATCH: "Password does not match.",
+  SIGNIN_SUCCESS: 'User created successfully.',
+  FAILURE: 'Something went wrong, try again.'
 }
 
 export const BUTTONS = {
@@ -69,12 +71,18 @@ export const VALUES = {
   COLD: 'c',
   WARM: 'w',
   HOT: 'h',
-  URL: 'https://thin-bat-99.localtunnel.me/api/v1/',
+  URL: 'https://unlucky-mouse-84.localtunnel.me/api/v1/',
   WATER_CONSUMPTION: 'Water Consumption',
   DATE: 'date',
   DATE_FORMAT: 'DD-MM-YYYY',
   MIN_DATE:'01-01-2016',
   MAX_DATE:'01-01-2030',
   LITERS: ' Liters',
-  USERS: 'users'
+  USERS: 'users',
+  FIND_ONE: 'findOne',
+  EMAIL: 'email',
+  STATISTICS: 'statistics',
+  FIND_BY_DATE: 'findByDate',
+  IDATE: 'idate',
+  FDATE: 'fdate'
 }

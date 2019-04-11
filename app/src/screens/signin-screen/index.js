@@ -7,9 +7,9 @@ import {
   KeyboardAvoidingView,
   TouchableOpacity,
   StatusBar,
-  ActivityIndicator
+  ActivityIndicator,
+  Alert
 } from 'react-native';
-import IconHouse from '../../assets/house1.png';
 import { colors, commonStyles } from '../../config/styles';
 import {
   SCREENS,
@@ -27,11 +27,11 @@ export default class SignIn extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      nameString: "",
-      lastNameString: "",
-      emailString: "",
-      passwordString: "",
-      checkPasswordString: "",
+      nameString: '',
+      lastNameString: '',
+      emailString: '',
+      passwordString: '',
+      checkPasswordString: '',
       isLoading: false,
     };
   }
@@ -54,14 +54,27 @@ export default class SignIn extends Component {
           })
         });
         let responseJson = await response.json();
-        this.props.navigation.navigate(SCREENS.LOGIN);
+        this.setState({ isLoading: false });
+        Alert.alert(
+          BUTTONS.SIGNIN,
+          ALERTS.SIGNIN_SUCCESS,
+          [{ text: BUTTONS.OK,
+            onPress: () => this.props.navigation.navigate(SCREENS.LOGIN)}],
+          { cancelable: false }
+        );
         return responseJson.result;
       } catch (error) {
-        console.log(error)
+        this.setState({ isLoading: false });
+        Alert.alert(
+          BUTTONS.SIGNIN,
+          ALERTS.FAILURE,
+          [{ text: BUTTONS.OK }],
+          { cancelable: false }
+        );
       }
     } else {
-      this.setState({ isLoading: false })
-      alert(ALERTS.PASSWORD_NOT_MATCH)
+      this.setState({ isLoading: false });
+      alert(ALERTS.PASSWORD_NOT_MATCH);
     }
   };
 

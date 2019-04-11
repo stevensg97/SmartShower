@@ -1,9 +1,9 @@
-import mongoose from "mongoose";
+import mongoose from 'mongoose';
 const Schema = mongoose.Schema;
 
 const StatisticSchema = new Schema({
-  date: String,
-  liters: Number,
+  date: Date,
+  liters: Number
 });
 
-export default mongoose.model("Statistic", StatisticSchema);
+export default mongoose.model('Statistic', StatisticSchema);

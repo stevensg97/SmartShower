@@ -1,4 +1,4 @@
-import React, { Component } from "react";
+import React, { Component } from 'react';
 import {
   View,
   Text,
@@ -8,17 +8,18 @@ import {
   KeyboardAvoidingView,
   TouchableOpacity,
   StatusBar,
-  ActivityIndicator
-} from "react-native";
-import IconHouse from "../../assets/house1.png";
-import { colors, commonStyles } from "../../config/styles";
+  ActivityIndicator,
+  Alert
+} from 'react-native';
+import IconHouse from '../../assets/house1.png';
+import { colors, commonStyles } from '../../config/styles';
 import {
   SCREENS,
   ALERTS,
   PLACEHOLDERS,
   BUTTONS,
   VALUES
-} from "../../config/constants";
+} from '../../config/constants';
 
 export default class Login extends Component {
   static navigationOptions = {
@@ -38,7 +39,9 @@ export default class Login extends Component {
     this.setState({ isLoading: true });
     try {
       let response = await fetch(
-        VALUES.URL + "users/findOne?email=" + this.state.emailString
+        VALUES.URL + VALUES.USERS + '/' +
+        VALUES.FIND_ONE + '?' + VALUES.EMAIL +
+        '=' + this.state.emailString
       );
       let responseJson = await response.json();
       if (
@@ -51,10 +54,22 @@ export default class Login extends Component {
         this.setState({ passwordString: '' });
       } else {
         this.setState({ isLoading: false });
-        alert(ALERTS.WRONG);
+        Alert.alert(
+          SCREENS.LOGIN,
+          ALERTS.WRONG,
+          [{ text: BUTTONS.OK }],
+          { cancelable: false }
+        );
       }
     } catch (error) {
       console.log(error);
+      this.setState({ isLoading: false });
+        Alert.alert(
+          SCREENS.LOGIN,
+          ALERTS.FAILURE,
+          [{ text: BUTTONS.OK }],
+          { cancelable: false }
+        );
     }
   };
 
@@ -76,34 +91,34 @@ export default class Login extends Component {
 
   render() {
     const spinner = this.state.isLoading ? (
-      <ActivityIndicator size="large" />
+      <ActivityIndicator size='large' />
     ) : null;
 
     return (
-      <KeyboardAvoidingView behavior="padding" style={styles.container}>
+      <KeyboardAvoidingView behavior='padding' style={styles.container}>
         <View style={styles.loginContainer}>
           <Image style={styles.logo} source={IconHouse} />
         </View>
         {spinner}
         <View style={styles.formContainer}>
           <View style={styles.containerForm}>
-            <StatusBar barStyle="light-content" />
+            <StatusBar barStyle='light-content' />
             <TextInput
               style={styles.input}
-              autoCapitalize="none"
+              autoCapitalize='none'
               onSubmitEditing={() => this.passwordInput.focus()}
               autoCorrect={false}
-              keyboardType="email-address"
+              keyboardType='email-address'
               value={this.state.emailString}
               onChange={this._onLoginTextChangedEmail}
               underlineColorAndroid={colors.transparent}
-              returnKeyType="next"
+              returnKeyType='next'
               placeholder={PLACEHOLDERS.EMAIL}
               placeholderTextColor={colors.placeholderColor}
             />
             <TextInput
               style={styles.input}
-              returnKeyType="go"
+              returnKeyType='go'
               ref={input => (this.passwordInput = input)}
               placeholder={PLACEHOLDERS.PASSWORD}
               value={this.state.passwordString}
@@ -139,17 +154,17 @@ const styles = StyleSheet.create({
     flex: 1
   },
   loginContainer: {
-    alignItems: "center",
+    alignItems: 'center',
     flexGrow: 1,
-    justifyContent: "center"
+    justifyContent: 'center'
   },
   logo: {
-    alignSelf: "center",
+    alignSelf: 'center',
     flex: 1,
-    height: "60%",
-    resizeMode: "contain",
-    resizeMode: "contain",
-    width: "60%"
+    height: '60%',
+    resizeMode: 'contain',
+    resizeMode: 'contain',
+    width: '60%'
   },
   containerForm: {
     padding: 20
@@ -164,14 +179,14 @@ const styles = StyleSheet.create({
   buttonContainer: commonStyles.buttonContainer,
   buttonText: commonStyles.buttonText,
   containerLink: {
-    alignItems: "center",
-    alignSelf: "stretch",
-    flexDirection: "column"
+    alignItems: 'center',
+    alignSelf: 'stretch',
+    flexDirection: 'column'
   },
   textLink: {
     color: colors.black,
-    fontWeight: "700",
+    fontWeight: '700',
     margin: 6,
-    textAlign: "center"
+    textAlign: 'center'
   }
 });

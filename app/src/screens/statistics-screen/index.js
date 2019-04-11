@@ -1,8 +1,20 @@
 import React, { Component } from 'react';
-import { View, Text, StyleSheet, TouchableOpacity, Alert } from 'react-native';
+import {
+  View,
+  Text,
+  StyleSheet,
+  TouchableOpacity,
+  Alert
+} from 'react-native';
 import DatePicker from 'react-native-datepicker';
 import { colors } from '../../config/styles';
-import { SCREENS, BUTTONS, VALUES, PLACEHOLDERS } from '../../config/constants';
+import {
+  SCREENS,
+  BUTTONS,
+  VALUES,
+  PLACEHOLDERS,
+  ALERTS
+} from '../../config/constants';
 
 export default class Shower extends Component {
   static navigationOptions = {
@@ -14,18 +26,34 @@ export default class Shower extends Component {
     this.state = {
       initialDate: '',
       finalDate: '',
-      dateLiters: '25',
-      todayLiters: ''
     };
   }
 
   _onWaterConsumptionByDatePressed = async () => {
-    Alert.alert(
-      VALUES.WATER_CONSUMPTION,
-      this.state.dateLiters+VALUES.LITERS,
-      [{ text: BUTTONS.OK, onPress: () => console.log("OK Pressed") }],
-      { cancelable: false }
-    )
+    try {
+      let response = await fetch(VALUES.URL+
+        VALUES.STATISTICS+'/'+VALUES.FIND_BY_DATE+'?'+
+        VALUES.IDATE+'='+this.state.initialDate+'&'+
+        VALUES.FDATE+'='+this.state.finalDate);
+      let responseJson = await response.json();
+      let totalLiters = 0;
+      for(var i = 0; i < responseJson.length; i++){
+        totalLiters = totalLiters + responseJson[i].liters;
+      }
+      Alert.alert(
+        VALUES.WATER_CONSUMPTION,
+        totalLiters+VALUES.LITERS,
+        [{ text: BUTTONS.OK }],
+        { cancelable: false }
+      )
+    } catch (error) {
+        Alert.alert(
+          BUTTONS.STATISTICS,
+          ALERTS.FAILURE,
+          [{ text: BUTTONS.OK }],
+          { cancelable: false }
+        );
+    }
   }
 
   render() {
@@ -90,28 +118,28 @@ const styles = StyleSheet.create({
     padding: 5
   },
   title: {
-    alignSelf: "center",
+    alignSelf: 'center',
     color: colors.black,
     fontSize: 30
   },
   datePicker: {
+    alignSelf: 'center',
+    margin: 5,
     width: 175,
-    alignSelf: "center",
-    margin: 5
   },
   dateIcon: {
-    position: "absolute",
     left: 0,
+    marginLeft: 0,
+    position: 'absolute',
     top: 4,
-    marginLeft: 0
   },
   dateInput: {
+    borderRadius: 15,
     marginLeft: 36,
     marginRight: 36,
-    borderRadius: 15
   },
   buttonContainer: {
-    alignSelf: "center",
+    alignSelf: 'center',
     backgroundColor: colors.black,
     borderRadius: 15,
     margin: 5,
@@ -120,10 +148,10 @@ const styles = StyleSheet.create({
   },
   buttonText: {
     color: colors.white,
-    fontWeight: "700",
-    textAlign: "center"
+    fontWeight: '700',
+    textAlign: 'center'
   },
   switch: {
-    alignSelf: "center"
+    alignSelf: 'center'
   }
 });
