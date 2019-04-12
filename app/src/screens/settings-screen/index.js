@@ -7,6 +7,9 @@ export default class Settings extends Component {
   static navigationOptions = {
     title: SCREENS.SETTINGS
   };
+  _onAboutPressed = () => {
+    this.props.navigation.navigate(SCREENS.ABOUT);
+  };
 
   _onLogOutPressed = () => {
     this.props.navigation.navigate(SCREENS.LOGIN);
@@ -35,7 +38,10 @@ export default class Settings extends Component {
           >
             <Text style={styles.buttonText}>{BUTTONS.LOGOUT}</Text>
           </TouchableOpacity>
-          <TouchableOpacity style={styles.buttonContainer}>
+          <TouchableOpacity
+          style={styles.buttonContainer}
+          onPress={this._onAboutPressed}
+          >
             <Text style={styles.buttonText}>{BUTTONS.ABOUT}</Text>
           </TouchableOpacity>
         </View>

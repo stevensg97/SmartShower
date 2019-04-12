@@ -6,7 +6,6 @@ const apollo = require('apollo-server-hapi')
 const { graphqlHapi, graphiqlHapi } = apollo
 
 
-import createStudentRoutes from './api/v1/student'
 import createUserRoutes from './api/v1/user'
 import createStatisticRoutes from './api/v1/statistic'
 
@@ -15,10 +14,9 @@ import schema from './graphql/schema'
 // Create a server with a host and port
 const server = Hapi.server({
   host: "localhost",
-  port: 8000
+  port: 4000
 });
 
-createStudentRoutes(server);
 createUserRoutes(server);
 createStatisticRoutes(server);
 

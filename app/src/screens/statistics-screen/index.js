@@ -16,7 +16,7 @@ import {
   ALERTS
 } from '../../config/constants';
 
-export default class Shower extends Component {
+export default class Statistics extends Component {
   static navigationOptions = {
     title: SCREENS.STATISTICS
   };
@@ -42,7 +42,7 @@ export default class Shower extends Component {
       }
       Alert.alert(
         VALUES.WATER_CONSUMPTION,
-        totalLiters+VALUES.LITERS,
+        totalLiters+' '+VALUES.LITERS,
         [{ text: BUTTONS.OK }],
         { cancelable: false }
       )

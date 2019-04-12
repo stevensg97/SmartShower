@@ -1,17 +1,23 @@
-#include <WiFiEspClient.h>
-#include <WiFiEsp.h>
-#include <PubSubClient.h>
+//#include <WiFiEspClient.h>
+//#include <WiFiEsp.h>
+#include "WiFiEsp.h"
+
+#ifndef HAVE_HWSERIAL1
 #include "SoftwareSerial.h"
+SoftwareSerial Serial1(11, 12);//esp8266(11,12); // make RX Arduino line is pin 2, make TX Arduino line is pin 3.
+#endif
+
 #include <dht11.h>
 #include <Servo.h>
+#include <PubSubClient.h>
 
 #define WIFI_AP "Apartamento"
 #define WIFI_PASSWORD "gaboselacome"
 #define TOKEN "YOUR_ACCESS_TOKEN"
 
-WiFiEspClient espClient;
-PubSubClient client(espClient);
-SoftwareSerial esp8266(11,12); // make RX Arduino line is pin 2, make TX Arduino line is pin 3.
+WiFiEspClient client;//espClient;
+PubSubClient clientMQTT(client);
+
 
 Servo servoSoap;
 
@@ -24,6 +30,9 @@ char server[] = "m16.cloudmqtt.com";
 char srv_user[] = "lnyscicw";
 char srv_pass[] = "rp1de-LikTTt";
 int port = 12758;
+
+char URL[] = "worldclockapi.com";
+String message = "";
 
 char device_id[] = "device1";
 
@@ -62,10 +71,10 @@ void callback(char* topic, byte* payload, unsigned int length) {
     openPumpTime = 30000;
   } else {
     openPumpTime = 40000;
-    Serial.println(openPumpTime);
   }
   
   if(params[2] == "c"){
+    httpPost(openPumpTime);
     digitalWrite(2, LOW);
     if(params[1] == "t"){
       delay(openPumpTime/2);
@@ -126,38 +135,39 @@ void callback(char* topic, byte* payload, unsigned int length) {
       digitalWrite(2, HIGH);
       digitalWrite(3, HIGH);
     }
-  } else{
+  } else if(params[2] == "a"){
     modeAuto(params[1], openPumpTime);
   }
 }
 
 
 void setup() {
-  esp8266.begin(9600);
   Serial.begin(9600);
+  Serial1.begin(9600);
+  //esp8266.begin(9600);
   pinMode(2, OUTPUT);
   pinMode(3, OUTPUT);
   pinMode(10, OUTPUT);
   pinMode(13, OUTPUT);
   pinMode(9, OUTPUT);
   digitalWrite(9, LOW);
-  //servoSoap.attach(8);
   digitalWrite(2, HIGH);
   digitalWrite(3, HIGH);
   digitalWrite(10, LOW);
   digitalWrite(13, HIGH);
-  //servoSoap.write(25);
   servoMove(10);
   InitWiFi();
-  client.setServer( server, port );
-  client.setCallback(callback);
+  clientMQTT.setServer( server, port );
+  clientMQTT.setCallback(callback);
   Serial.println("Configuracion exitosa");
+  getDate();
+  httpPost(40000.0);
 }
 
 
 void loop(){
-  //servoMove(10);
-  //servoMove(70);
+  
+  //Serial.println(message);
   status = WiFi.status();
   if ( status != WL_CONNECTED) {
     while ( status != WL_CONNECTED) {
@@ -169,25 +179,21 @@ void loop(){
     }
     Serial.println("Connected to AP");
   }
+
+  
  
-  if ( !client.connected() ) {
+  if ( !clientMQTT.connected() && !client.connected()) {
     reconnect();
   }
-
-//  if ( millis() - lastSend > 2000 ) { // Update and send only after 1 seconds
-//    pub();
-//    lastSend = millis();
-//  }
   delay(1000);
-
-  client.loop();
+  clientMQTT.loop();
 }
 
 void InitWiFi(){
   // initialize serial for ESP module
-  esp8266.begin(9600);
+  //Serial1.begin(9600);
   // initialize ESP module
-  WiFi.init(&esp8266);
+  WiFi.init(&Serial1);
   // check for the presence of the shield
   if (WiFi.status() == WL_NO_SHIELD) {
     Serial.println("WiFi shield not present");
@@ -216,21 +222,21 @@ void pub(){
   // Send payload
   char attributes[100];
   payload.toCharArray( attributes, 100 );
-  client.publish( "/home/smartshower", attributes );
+  clientMQTT.publish( "/home/smartshower", attributes );
   Serial.println( attributes );
 }
 
 void reconnect() {
   // Loop until we're reconnected
-  while (!client.connected()) {
+  while (!clientMQTT.connected()) {
     Serial.print("Connecting to CloudMQTT node ...");
     // Attempt to connect (clientId, username, password)
-    if ( client.connect("device1", "device1", "12345") ) {
-      client.subscribe("/home/smartshower");
+    if ( clientMQTT.connect("device1", "device1", "12345") ) {
+      clientMQTT.subscribe("/home/smartshower");
       Serial.println( "[DONE]" );
     } else {
       Serial.print( "[FAILED] [ rc = " );
-      Serial.print( client.state() );
+      Serial.print( clientMQTT.state() );
       Serial.println( " : retrying in 5 seconds]" );
       // Wait 5 seconds before retrying
       delay( 5000 );
@@ -322,4 +328,45 @@ void servoMove(int ang){
     digitalWrite(9, LOW);
     delayMicroseconds(25000-pause);
   }
+}
+
+String getDate(){
+  clientMQTT.disconnect();
+  int index = 0;
+  if(client.connect(URL, 80)){
+    Serial.println("Connected to URL");
+    client.println("GET /api/json/est/now HTTP/1.1");
+    client.println("Host: worldclockapi.com");
+    client.println("Connection: close");
+    client.println();
+    while (client.available()) {
+      char c = client.read();
+      if (c == '$' || message!=""){
+        message += c;
+        index+=1;
+      }
+    }
+    message=message.substring(28, 38);
+    Serial.println(message);
+  }
+  return message;
+}
+void httpPost(double timeInUse){
+  double liters = (100*timeInUse)/(1000*3600);
+  String strLiters = String(liters); 
+
+  clientMQTT.disconnect();
+  String content = "date=11-04-2019&liters=4";
+  Serial.println(content);
+  char server[] = "quiet-snake-88.localtunnel.me";
+  if(client.connect(server, 80)){
+    Serial.println("Connected to URL");
+    client.println("POST /api/v1/statistics HTTP/1.1");
+    client.println("Host: quiet-snake-88.localtunnel.me");
+    client.println("Content-Type: application/x-www-form-urlencoded");
+    client.println();
+    client.println("date=11-04-2019&liters=4");
+  }
+  
+  
 }

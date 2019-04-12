@@ -1,8 +1,18 @@
-import React, { Component } from "react";
-import { View, Text, StyleSheet, TouchableOpacity, Switch } from "react-native";
-import MQTTClient from "./mqtt";
-import { colors, commonStyles } from "../../config/styles";
-import { SCREENS, BUTTONS, VALUES } from "../../config/constants";
+import React, { Component } from 'react';
+import {
+  View,
+  Text,
+  StyleSheet,
+  TouchableOpacity,
+  Switch } from 'react-native';
+import MQTTClient from './mqtt';
+import {
+  colors,
+  commonStyles } from '../../config/styles';
+import {
+  SCREENS,
+  BUTTONS,
+  VALUES } from '../../config/constants';
 
 export default class Shower extends Component {
   static navigationOptions = {
@@ -14,9 +24,58 @@ export default class Shower extends Component {
     this.state = {
       waterLevel: VALUES.PERCENTAGE25,
       switchSoapValue: false,
-      soapValue: 'f',
-      waterTemperature: VALUES.COLD
+      soapValue: VALUES.F,
+      waterTemperature: VALUES.COLD,
+      time: VALUES.TIME25,
+      date: this._getDate()
     };
+  }
+
+  _getDate = async () => {
+    try {
+      let response = await fetch(VALUES.DATE_API_URL);
+      let responseJson = await response.json();
+      var formattedDate = responseJson.currentDateTime.toString().substring(8, 10) + '-' +
+      responseJson.currentDateTime.toString().substring(5, 7) + '-' +
+      responseJson.currentDateTime.toString().substring(0, 4);
+      console.log(formattedDate);
+      this.setState({ date: formattedDate });
+    } catch (error) {
+      console.log(error);
+    }
+  }
+
+  _getLiters = () => {
+    var liters = (100*this.state.time)/(1000*3600);
+    return liters;
+  }
+
+  _onDonePress = async () => {
+    try {
+      var content = VALUES.DATE + '=' +
+      this.state.date + '&' +
+       VALUES.LITERS + '=' + this._getLiters();
+      console.log(content);
+      let response = await fetch(VALUES.URL+VALUES.STATISTICS, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/x-www-form-urlencoded',
+        },
+        body:
+          content
+      });
+      let responseJson = await response.json();
+      console.log(responseJson);
+
+    } catch (error) {
+      this.setState({ isLoading: false });
+      Alert.alert(
+        BUTTONS.SHOWER,
+        ALERTS.FAILURE,
+        [{ text: BUTTONS.OK }],
+        { cancelable: false }
+      );
+    }
   }
 
   _selectedButtonStyle = function (value) {
@@ -43,6 +102,16 @@ export default class Shower extends Component {
 
   _selectedWaterLevel = value => {
     this.setState({ waterLevel: value });
+    if (value == VALUES.PERCENTAGE25) {
+      this.setState({ time: VALUES.TIME25 });
+    } else if(value == VALUES.PERCENTAGE50){
+      this.setState({ time: VALUES.TIME50 });
+    } else if(value == VALUES.PERCENTAGE75){
+      this.setState({ time: VALUES.TIME75 });
+    } else{
+      this.setState({ time: VALUES.TIME100 });
+    }
+
   };
 
   _selectedWaterTemperature = value => {
@@ -52,9 +121,9 @@ export default class Shower extends Component {
   _toggleSoapSwitch = value => {
     this.setState({ switchSoapValue: value });
     if(value){
-      this.setState({ soapValue: 't' });
+      this.setState({ soapValue: VALUES.T });
     } else {
-      this.setState({ soapValue: 'f' });
+      this.setState({ soapValue: VALUES.F });
     }
   };
 
@@ -146,10 +215,14 @@ export default class Shower extends Component {
           <Text style={styles.title}>{BUTTONS.TURN_ON}</Text>
           <TouchableOpacity
             style={styles.buttonContainer}
-            onPress={() => MQTTClient([
+            onPress={() => {
+              this._getDate();
+              MQTTClient([
               this.state.waterLevel,
               this.state.soapValue,
-              this.state.waterTemperature])}
+              this.state.waterTemperature]);
+              this._onDonePress();
+            }}
           >
             <Text style={styles.buttonText}>{BUTTONS.DONE}</Text>
           </TouchableOpacity>
@@ -168,12 +241,12 @@ const styles = StyleSheet.create({
     padding: 5
   },
   title: {
-    alignSelf: "center",
+    alignSelf: 'center',
     color: colors.black,
     fontSize: 30
   },
   buttonContainer: {
-    alignSelf: "center",
+    alignSelf: 'center',
     backgroundColor: colors.black,
     borderRadius: 15,
     margin: 5,
@@ -182,10 +255,10 @@ const styles = StyleSheet.create({
   },
   buttonText: {
     color: colors.white,
-    fontWeight: "700",
-    textAlign: "center"
+    fontWeight: '700',
+    textAlign: 'center'
   },
   switch: {
-    alignSelf: "center"
+    alignSelf: 'center'
   }
 });

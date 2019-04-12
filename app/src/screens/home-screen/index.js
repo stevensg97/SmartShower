@@ -6,6 +6,7 @@ import {
   Text,
   Image,
   TouchableOpacity,
+  BackHandler
 } from 'react-native';
 import IconLogo from '../../assets/logo.png';
 import IconSettings from '../../assets/settings.png';
@@ -33,6 +34,13 @@ export default class Home extends Component {
     };
   }
   componentDidMount() {
+    /* BackHandler.addEventListener('hardwareBackPress',() => {
+      if (this.navigationOptions.title == 'Home') {
+       return false;
+      }
+      return true;
+     }); */
+
     let items = Array.apply(null, Array(2)).map((v, i) => {
       return { id: i, src: images[i], option: options[i], optionScreen: optionsScreens[i] };
     });
@@ -40,6 +48,7 @@ export default class Home extends Component {
       dataSource: items,
     });
   };
+
 
   _onOptionPressed = (screen) => {
     return this.props.navigation.navigate(screen);
