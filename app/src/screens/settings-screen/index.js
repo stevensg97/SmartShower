@@ -1,12 +1,20 @@
-import React, { Component } from "react";
-import { View, Text, StyleSheet, TouchableOpacity } from "react-native";
-import { colors } from "../../config/styles";
-import { SCREENS, BUTTONS } from "../../config/constants";
+import React, { Component } from 'react';
+import {
+  View,
+  Text,
+  StyleSheet,
+  TouchableOpacity,
+} from 'react-native';
+import { colors } from '../../config/styles';
+import {
+  SCREENS,
+  BUTTONS } from '../../config/constants';
 
 export default class Settings extends Component {
   static navigationOptions = {
     title: SCREENS.SETTINGS
   };
+
   _onAboutPressed = () => {
     this.props.navigation.navigate(SCREENS.ABOUT);
   };
@@ -59,7 +67,7 @@ const styles = StyleSheet.create({
     padding: 5
   },
   buttonContainer: {
-    alignSelf: "center",
+    alignSelf: 'center',
     backgroundColor: colors.black,
     borderRadius: 15,
     margin: 20,
@@ -68,7 +76,7 @@ const styles = StyleSheet.create({
   },
   buttonText: {
     color: colors.white,
-    fontWeight: "700",
-    textAlign: "center"
+    fontWeight: '700',
+    textAlign: 'center'
   }
 });

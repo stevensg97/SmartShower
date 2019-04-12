@@ -8,7 +8,7 @@ import {
   TouchableOpacity,
   StatusBar,
   ActivityIndicator,
-  Alert
+  Alert,
 } from 'react-native';
 import { colors, commonStyles } from '../../config/styles';
 import {

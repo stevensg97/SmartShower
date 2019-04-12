@@ -2,7 +2,6 @@ import React, { Component } from 'react';
 import {
   ImageBackground,
   StyleSheet,
-  ActivityIndicator,
 } from 'react-native';
 import IconAbout from '../../assets/splash.png';
 import {
@@ -14,11 +13,6 @@ export default class About extends Component {
     title: SCREENS.ABOUT
   };
 
-  constructor(props) {
-    super(props);
-    this.state = {
-    };
-  }
   render() {
     return (
       <ImageBackground

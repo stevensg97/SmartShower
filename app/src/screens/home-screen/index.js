@@ -30,16 +30,13 @@ export default class Home extends Component {
   constructor() {
     super();
     this.state = {
-      dataSource: {},
     };
   }
+
   componentDidMount() {
     /* BackHandler.addEventListener('hardwareBackPress',() => {
-      if (this.navigationOptions.title == 'Home') {
-       return false;
-      }
       return true;
-     }); */
+    }); */
 
     let items = Array.apply(null, Array(2)).map((v, i) => {
       return { id: i, src: images[i], option: options[i], optionScreen: optionsScreens[i] };

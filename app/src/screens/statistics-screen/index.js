@@ -4,7 +4,7 @@ import {
   Text,
   StyleSheet,
   TouchableOpacity,
-  Alert
+  Alert,
 } from 'react-native';
 import DatePicker from 'react-native-datepicker';
 import { colors } from '../../config/styles';

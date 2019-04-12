@@ -5,7 +5,8 @@ import {
   StyleSheet,
   TouchableOpacity,
   Switch,
-  Alert } from 'react-native';
+  Alert,
+} from 'react-native';
 import MQTTClient from './mqtt';
 import {
   colors,
