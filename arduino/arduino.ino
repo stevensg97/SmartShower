@@ -1,43 +1,30 @@
-//#include <WiFiEspClient.h>
-//#include <WiFiEsp.h>
 #include "WiFiEsp.h"
-
 #ifndef HAVE_HWSERIAL1
 #include "SoftwareSerial.h"
 SoftwareSerial Serial1(11, 12);//esp8266(11,12); // make RX Arduino line is pin 2, make TX Arduino line is pin 3.
 #endif
-
 #include <dht11.h>
 #include <Servo.h>
 #include <PubSubClient.h>
-
 #define WIFI_AP "Apartamento"
 #define WIFI_PASSWORD "gaboselacome"
 #define TOKEN "YOUR_ACCESS_TOKEN"
+#define DHT11_PIN 4
 
 WiFiEspClient client;//espClient;
 PubSubClient clientMQTT(client);
-
-
 Servo servoSoap;
 
 dht11 DHT;
-#define DHT11_PIN 4
 int chk;
-char ssid[] = "Apartamento";
-char pass[] = "gaboselacome";
 char server[] = "m16.cloudmqtt.com";
 char srv_user[] = "lnyscicw";
 char srv_pass[] = "rp1de-LikTTt";
 int port = 12758;
 
-char URL[] = "worldclockapi.com";
-String message = "";
-
 char device_id[] = "device1";
 
 int status = WL_IDLE_STATUS;
-unsigned long lastSend;
 
 void(* resetFunc) (void) = 0; //declare reset function @ address 0
 
@@ -64,28 +51,22 @@ void callback(char* topic, byte* payload, unsigned int length) {
 
   double openPumpTime;
   if(params[0] == "25"){
-    openPumpTime = 10000;
+    openPumpTime = 5000;
   } else if(params[0] == "50"){
-    openPumpTime = 20000;
+    openPumpTime = 10000;
   } else if(params[0] == "75"){
-    openPumpTime = 30000;
+    openPumpTime = 15000;
   } else {
-    openPumpTime = 40000;
+    openPumpTime = 20000;
   }
   
   if(params[2] == "c"){
-    httpPost(openPumpTime);
     digitalWrite(2, LOW);
     if(params[1] == "t"){
       delay(openPumpTime/2);
       digitalWrite(2, HIGH);
-      digitalWrite(10, HIGH);
-      //servoSoap.write(25);
-      servoMove(25);
-      delay(3000);
+      servoMove(10);
       servoMove(90);
-      //servoSoap.write(90);
-      digitalWrite(10, LOW);
       digitalWrite(2, LOW);
       delay(openPumpTime/2);
       digitalWrite(2, HIGH);
@@ -101,11 +82,8 @@ void callback(char* topic, byte* payload, unsigned int length) {
     if(params[1] == "t"){
       delay(openPumpTime/2);
       digitalWrite(3, HIGH);
-      digitalWrite(10, HIGH);
-      //servoSoap.write(25);
-      delay(3000);
-      //servoSoap.write(90);
-      digitalWrite(10, LOW);
+      servoMove(10);
+      servoMove(90);
       digitalWrite(3, LOW);
       delay(openPumpTime/2);
       digitalWrite(3, HIGH);
@@ -113,21 +91,21 @@ void callback(char* topic, byte* payload, unsigned int length) {
       delay(openPumpTime);
       digitalWrite(3, HIGH);
     }
+    Serial.println("resetting");
+    digitalWrite(13, LOW);
+    resetFunc();  //call reset
   } else if(params[2] == "w"){
     digitalWrite(2, LOW);
     digitalWrite(3, LOW);
     if(params[1] == "t"){
-      delay(openPumpTime/2);
+      delay(openPumpTime/4);
       digitalWrite(2, HIGH);
       digitalWrite(3, HIGH);
-      digitalWrite(10, HIGH);
-      //servoSoap.write(25);
-      delay(3000);
-      //servoSoap.write(90);
-      digitalWrite(10, LOW);
+      servoMove(10);
+      servoMove(90);
       digitalWrite(2, LOW);
       digitalWrite(3, LOW);
-      delay(openPumpTime/2);
+      delay(openPumpTime/4);
       digitalWrite(2, HIGH);
       digitalWrite(3, HIGH);
     } else{
@@ -135,6 +113,9 @@ void callback(char* topic, byte* payload, unsigned int length) {
       digitalWrite(2, HIGH);
       digitalWrite(3, HIGH);
     }
+    Serial.println("resetting");
+    digitalWrite(13, LOW);
+    resetFunc();  //call reset
   } else if(params[2] == "a"){
     modeAuto(params[1], openPumpTime);
   }
@@ -144,7 +125,6 @@ void callback(char* topic, byte* payload, unsigned int length) {
 void setup() {
   Serial.begin(9600);
   Serial1.begin(9600);
-  //esp8266.begin(9600);
   pinMode(2, OUTPUT);
   pinMode(3, OUTPUT);
   pinMode(10, OUTPUT);
@@ -159,15 +139,11 @@ void setup() {
   InitWiFi();
   clientMQTT.setServer( server, port );
   clientMQTT.setCallback(callback);
-  Serial.println("Configuracion exitosa");
-  getDate();
-  httpPost(40000.0);
+  Serial.println("Configuration success");
 }
 
 
 void loop(){
-  
-  //Serial.println(message);
   status = WiFi.status();
   if ( status != WL_CONNECTED) {
     while ( status != WL_CONNECTED) {
@@ -179,10 +155,7 @@ void loop(){
     }
     Serial.println("Connected to AP");
   }
-
-  
- 
-  if ( !clientMQTT.connected() && !client.connected()) {
+  if ( !clientMQTT.connected() ) {
     reconnect();
   }
   delay(1000);
@@ -190,8 +163,6 @@ void loop(){
 }
 
 void InitWiFi(){
-  // initialize serial for ESP module
-  //Serial1.begin(9600);
   // initialize ESP module
   WiFi.init(&Serial1);
   // check for the presence of the shield
@@ -234,6 +205,13 @@ void reconnect() {
     if ( clientMQTT.connect("device1", "device1", "12345") ) {
       clientMQTT.subscribe("/home/smartshower");
       Serial.println( "[DONE]" );
+      digitalWrite(10, HIGH);
+      delay(200);
+      digitalWrite(10, LOW);
+      delay(200);
+      digitalWrite(10, HIGH);
+      delay(200);
+      digitalWrite(10, LOW);
     } else {
       Serial.print( "[FAILED] [ rc = " );
       Serial.print( clientMQTT.state() );
@@ -263,11 +241,8 @@ void modeAuto(String soap, double openPumpTime){
     if(soap == "t"){
       delay(openPumpTime/2);
       digitalWrite(3, HIGH);
-      digitalWrite(10, HIGH);
-      //servoSoap.write(25);
-      delay(3000);
-      //servoSoap.write(90);
-      digitalWrite(10, LOW);
+      servoMove(10);
+      servoMove(90);
       digitalWrite(3, LOW);
       delay(openPumpTime/2);
       digitalWrite(3, HIGH);
@@ -275,22 +250,22 @@ void modeAuto(String soap, double openPumpTime){
       delay(openPumpTime);
       digitalWrite(3, HIGH);
     }
+    Serial.println("resetting");
+    digitalWrite(13, LOW);
+    resetFunc();  //call reset
   } else if(avgTemp >= 15 && avgTemp<25){
     Serial.println( "Warm water" );
     digitalWrite(2, LOW);
     digitalWrite(3, LOW);
     if(soap == "t"){
-      delay(openPumpTime/2);
+      delay(openPumpTime/4);
       digitalWrite(2, HIGH);
       digitalWrite(3, HIGH);
-      digitalWrite(10, HIGH);
-      //servoSoap.write(25);
-      delay(3000);
-      //servoSoap.write(90);
-      digitalWrite(10, LOW);
+      servoMove(10);
+      servoMove(90);
       digitalWrite(2, LOW);
       digitalWrite(3, LOW);
-      delay(openPumpTime/2);
+      delay(openPumpTime/4);
       digitalWrite(2, HIGH);
       digitalWrite(3, HIGH);
     } else{
@@ -298,17 +273,17 @@ void modeAuto(String soap, double openPumpTime){
       digitalWrite(2, HIGH);
       digitalWrite(3, HIGH);
     }
+    Serial.println("resetting");
+    digitalWrite(13, LOW);
+    resetFunc();  //call reset
   } else{
     Serial.println( "Cold water" );
     digitalWrite(2, LOW);
     if(soap == "t"){
       delay(openPumpTime/2);
       digitalWrite(2, HIGH);
-      digitalWrite(10, HIGH);
-      //servoSoap.write(25);
-      delay(3000);
-      //servoSoap.write(90);
-      digitalWrite(10, LOW);
+      servoMove(10);
+      servoMove(90);
       digitalWrite(2, LOW);
       delay(openPumpTime/2);
       digitalWrite(2, HIGH);
@@ -316,6 +291,9 @@ void modeAuto(String soap, double openPumpTime){
       delay(openPumpTime);
       digitalWrite(2, HIGH);
     }
+    Serial.println("resetting");
+    digitalWrite(13, LOW);
+    resetFunc();  //call reset
   }
 }
 
@@ -328,45 +306,4 @@ void servoMove(int ang){
     digitalWrite(9, LOW);
     delayMicroseconds(25000-pause);
   }
-}
-
-String getDate(){
-  clientMQTT.disconnect();
-  int index = 0;
-  if(client.connect(URL, 80)){
-    Serial.println("Connected to URL");
-    client.println("GET /api/json/est/now HTTP/1.1");
-    client.println("Host: worldclockapi.com");
-    client.println("Connection: close");
-    client.println();
-    while (client.available()) {
-      char c = client.read();
-      if (c == '$' || message!=""){
-        message += c;
-        index+=1;
-      }
-    }
-    message=message.substring(28, 38);
-    Serial.println(message);
-  }
-  return message;
-}
-void httpPost(double timeInUse){
-  double liters = (100*timeInUse)/(1000*3600);
-  String strLiters = String(liters); 
-
-  clientMQTT.disconnect();
-  String content = "date=11-04-2019&liters=4";
-  Serial.println(content);
-  char server[] = "quiet-snake-88.localtunnel.me";
-  if(client.connect(server, 80)){
-    Serial.println("Connected to URL");
-    client.println("POST /api/v1/statistics HTTP/1.1");
-    client.println("Host: quiet-snake-88.localtunnel.me");
-    client.println("Content-Type: application/x-www-form-urlencoded");
-    client.println();
-    client.println("date=11-04-2019&liters=4");
-  }
-  
-  
 }

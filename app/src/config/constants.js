@@ -78,7 +78,7 @@ export const VALUES = {
   COLD: 'c',
   WARM: 'w',
   HOT: 'h',
-  URL: 'https://grumpy-mule-24.localtunnel.me/api/v1/',
+  URL: 'https://clever-pug-89.localtunnel.me/api/v1/',
   DATE_API_URL: 'http://worldclockapi.com/api/json/est/now',
   WATER_CONSUMPTION: 'Water Consumption',
   DATE: 'date',
