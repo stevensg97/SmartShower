@@ -4,7 +4,6 @@
 SoftwareSerial Serial1(11, 12);//esp8266(11,12); // make RX Arduino line is pin 2, make TX Arduino line is pin 3.
 #endif
 #include <dht11.h>
-#include <Servo.h>
 #include <PubSubClient.h>
 #define WIFI_AP "Apartamento"
 #define WIFI_PASSWORD "gaboselacome"
@@ -13,7 +12,6 @@ SoftwareSerial Serial1(11, 12);//esp8266(11,12); // make RX Arduino line is pin 
 
 WiFiEspClient client;//espClient;
 PubSubClient clientMQTT(client);
-Servo servoSoap;
 
 dht11 DHT;
 int chk;
